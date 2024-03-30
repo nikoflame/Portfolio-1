@@ -127,7 +127,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Task.cpp" />
     <ClCompile Include="Todo List Console Application.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="Task.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Instructions.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
