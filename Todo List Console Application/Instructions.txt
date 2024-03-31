@@ -3,7 +3,7 @@ Project Idea: Todo List Console Application
 Description:
 	Create a simple console-based Todo List application in C++.
 	This project will allow users to manage their tasks by adding, viewing, updating, and deleting tasks from a list.
-	It's a practical project that demonstrates your proficiency in C++ and fundamental programming concepts like data structures, file I/O, and user input/output.
+	It's a practical project that demonstrates my proficiency in C++ and fundamental programming concepts like data structures, file I/O, and user I/O.
 
 Features to Implement:
 
