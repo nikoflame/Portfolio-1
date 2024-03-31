@@ -28,7 +28,7 @@ public:
 		: mIsDone(false), mTitle(_title), mDesc(_desc), mDate(_date), mPriority(_priority) {}
 
 	//allows you to set a task to be equal to another task. //good for copying
-	Task& operator=(Task& _task);
+	Task& operator=(const Task& _task);
 
 	//initialize or re-enter members of the task
 	void setTitle(std::string _title) { mTitle = _title; }
@@ -41,6 +41,7 @@ public:
 	std::string getTitle() { return mTitle; }
 	std::string getDesc() { return mDesc; }
 	Date getDate() { return mDate; }
+	int getPriority() { return mPriority; }
 
 	//easy ways to set the mIsDone member
 	void Done() { mIsDone = true; }

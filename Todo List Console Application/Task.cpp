@@ -1,6 +1,6 @@
 #include "Task.h"
 
-Task& Task::operator=(Task& _task)
+Task& Task::operator=(const Task& _task)
 {
     mIsDone = _task.mIsDone;
     mTitle = _task.mTitle;
@@ -25,10 +25,10 @@ void Task::PrintTask()
     if (mDate.mDay != 0)
     {
         std::cout << "Due: ";
-        if (mDate.mDay < 10) std::cout << "0";
-        std::cout << mDate.mDay << "/";
         if (mDate.mMonth < 10) std::cout << "0";
-        std::cout << mDate.mMonth << "/" << mDate.mYear << "\t";
+        std::cout << mDate.mMonth << "/";
+        if (mDate.mDay < 10) std::cout << "0";
+        std::cout << mDate.mDay << "/" << mDate.mYear << "\t";
     }
 
     //print the priority

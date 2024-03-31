@@ -1,6 +1,9 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <regex>
+#include <sstream>
+#include "Task.h"
 
 namespace Utility
 {
@@ -69,5 +72,92 @@ namespace Utility
 		int choice = GetValidatedInt("Choose One: ", 1, menuSize);
 
 		return choice;
+	}
+
+	//strips a string of its empty space characters at the beginning and end
+	inline std::string StripString(std::string& s)
+	{
+		// Remove trailing whitespace
+		while (!s.empty() && (s.back() == ' ' || s.back() == '\t' || s.back() == '\n')) {
+			s.pop_back();
+		}
+
+		// Remove leading whitespace
+		size_t start = 0;
+		while (start < s.size() && (s[start] == ' ' || s[start] == '\t' || s[start] == '\n')) {
+			++start;
+		}
+		s = s.substr(start);
+
+		return s;
+	}
+
+	//checks if a string is in a valid MM/DD/YYYY date format and returns an error code (0 = good, 1 = format, 2 = range)
+	inline int isValidDate(const std::string& dateString)
+	{
+		//regular expression for MM/DD/YYYY format
+		std::regex dateRegex("^\\d{2}/\\d{2}/\\d{4}$");
+
+		//if it's in the wrong format, return 0
+		if (!std::regex_match(dateString, dateRegex)) return 1; //ERROR CODE 1 = WRONG FORMAT
+
+		//extract month, day, and year from the string using stringstream
+		std::stringstream ss(dateString);
+		char delimiter;
+		int month, day, year;
+		ss >> month >> delimiter >> day >> delimiter >> year;
+
+		// Check if month, day, and year are within valid ranges
+		if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1000 || year > 9999) return 2; //ERROR CODE 2 = INVALID RANGE
+
+		return 0; //ERROR CODE 0 = GOOD
+	}
+
+	inline Task AddTask()
+	{
+		//create a task
+		Task task;
+
+		//set the title
+		std::cout << "Please enter a name for your task and press enter. Alternatively, you may press enter with no input to go back to the main menu.\nName of task >> ";
+		std::string title = "";
+		std::getline(std::cin, title);
+		StripString(title);
+		if (title == "") return task;
+		task.setTitle(title);
+
+		//set the description
+		std::cout << "Please enter a description for your task and press enter. Alternatively, you may press enter with no input to skip this.\nDescription of task >> ";
+		std::string desc = "";
+		std::getline(std::cin, desc);
+		StripString(desc);
+		if (desc != "") task.setDesc(desc);
+
+		//set the due date
+		while (true)
+		{
+			std::cout << "Please enter a due date for your task and press enter. Alternatively, you may press enter with no input to skip this.\nDue date of task (MM/DD/YYYY) >> ";
+			std::string date = "";
+			std::getline(std::cin, date);
+			StripString(date);
+			if (date == "") break;
+			if (isValidDate(date) == 0)
+			{
+				Date d;
+				std::stringstream ss(date);
+				char delimiter;
+				ss >> d.mMonth >> delimiter >> d.mDay >> delimiter >> d.mYear;
+				task.setDate(d);
+				break;
+			}
+			if (isValidDate(date) == 1) std::cout << "Invalid date format. Please enter a date in MM/DD/YYYY format.\n";
+			else std::cout << "Invalid integer range. Please enter a valid month, day, and year.\n";
+		}
+
+		//set the priority
+		task.setPriority(GetValidatedInt("Please enter a priority for your task and press enter. Default priority is 0.\nPriority >> "));
+
+		//return the completed task
+		return task;
 	}
 }
