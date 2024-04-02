@@ -20,9 +20,9 @@ int main()
         "Delete a task",
         "Save and Exit"
     };
+    bool MainMenuExit = false;
 
     //Execute main menu
-    bool MainMenuExit = false;
     do
     {
         //organize and print the todo list if there is one
@@ -54,10 +54,41 @@ int main()
         }
         case 2: //edit a task
         {
+            if (TodoList.size() == 0) std::cout << "Please add a task to your todo list first!\n";
+            else
+            {
+                std::cout << "Please choose a task to edit:\n";
+                for (int i = 0; i < TodoList.size(); i++)
+                {
+                    std::cout << i + 1 << ". ";
+                    TodoList[i].PrintTask();
+                }
+                int TaskToEdit = Utility::GetValidatedInt("\nChoose one: ", 1, TodoList.size());
+                Utility::EditTask(TodoList[TaskToEdit - 1]);
+            }
             break;
         }
         case 3: //delete a task
         {
+            if (TodoList.size() == 0) std::cout << "Please add a task to your todo list first!\n";
+            else
+            {
+                std::cout << "Please choose a task to delete:\n";
+                for (int i = 0; i < TodoList.size(); i++)
+                {
+                    std::cout << i + 1 << ". ";
+                    TodoList[i].PrintTask();
+                }
+                int TaskToDelete = Utility::GetValidatedInt("\nChoose one: ", 1, TodoList.size());
+
+                std::cout << "This is the task you chose to delete:\n";
+                TodoList[TaskToDelete - 1].PrintTask();
+                
+                std::string menuYN[] = {"Yes", "No"};
+                int menuYNChoice = Utility::MenuAndChoice("\nAre you sure you want to delete this task? ", menuYN, 2);
+
+                if (menuYNChoice == 1) TodoList.erase(TodoList.begin() + (TaskToDelete - 1));
+            }
             break;
         }
         case 4: //save and exit

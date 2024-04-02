@@ -160,4 +160,106 @@ namespace Utility
 		//return the completed task
 		return task;
 	}
+
+	inline void EditTask(Task& t)
+	{
+		//set up the edit menu
+		const char* EditMenuTitle = "Please choose an option:";
+		std::string EditMenu[] =
+		{
+			"Mark as complete/undo",
+			"Change name/title",
+			"Change description",
+			"Remove description",
+			"Change due date",
+			"Remove due date",
+			"Change priority",
+			"Back to main menu"
+		};
+		bool EditMenuExit = false;
+
+		//set up yes or no menu
+		std::string menuYN[] = { "Yes", "No" };
+
+		//execute edit menu
+		do
+		{
+			//print edit menu and collect user input
+			int EditMenuChoice = MenuAndChoice(EditMenuTitle, EditMenu, 8);
+			switch (EditMenuChoice)
+			{
+			case 1: //mark as complete/undo
+			{
+				if (t.getIsDone()) t.Undo();
+				else t.Done();
+				break;
+			}
+			case 2: //change name/title
+			{
+				std::cout << "Please enter a new name for the task (enter nothing for no change): ";
+				std::string title = "";
+				std::getline(std::cin, title);
+				StripString(title);
+				if (title != "") t.setTitle(title);
+				break;
+			}
+			case 3: //change description
+			{
+				std::cout << "Please enter a new description for the task (enter nothing for no change): ";
+				std::string desc = "";
+				std::getline(std::cin, desc);
+				StripString(desc);
+				if (desc != "") t.setDesc(desc);
+				break;
+			}
+			case 4: //delete description
+			{
+				int menuYNChoice = Utility::MenuAndChoice("Are you sure you would like to delete your description? ", menuYN, 2);
+				if (menuYNChoice == 1) t.setDesc("");
+				break;
+			}
+			case 5: //change due date
+			{
+				while (true)
+				{
+					std::cout << "Please enter a new due date for your task and press enter (enter nothing for no change):\nDue date of task (MM/DD/YYYY) >> ";
+					std::string date = "";
+					std::getline(std::cin, date);
+					StripString(date);
+					if (date == "") break;
+					if (isValidDate(date) == 0)
+					{
+						Date d;
+						std::stringstream ss(date);
+						char delimiter;
+						ss >> d.mMonth >> delimiter >> d.mDay >> delimiter >> d.mYear;
+						t.setDate(d);
+						break;
+					}
+					if (isValidDate(date) == 1) std::cout << "Invalid date format. Please enter a date in MM/DD/YYYY format.\n";
+					else std::cout << "Invalid integer range. Please enter a valid month, day, and year.\n";
+				}
+				break;
+			}
+			case 6: //delete due date
+			{
+				int menuYNChoice = Utility::MenuAndChoice("Are you sure you would like to delete your due date? ", menuYN, 2);
+				if (menuYNChoice == 1) t.setDate(Date());
+				break;
+			}
+			case 7: //change priority
+			{
+				int p = Utility::GetValidatedInt("Please enter a new priority for the task: ");
+				t.setPriority(p);
+				break;
+			}
+			case 8: //back to main menu
+			default:
+			{
+				EditMenuExit = true;
+				break;
+			}
+			}
+		} while (!EditMenuExit);
+	}
 }
