@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 #include "Task.h"
 #include "Utility.h"
 
@@ -7,9 +8,29 @@ int main()
 {
     //initialize a todo list and a bool for if the file is opened
     std::vector<Task> TodoList;
-    bool fopen = false;
+
+    //open file
+    std::fstream fin;
+    fin.open("list.bin", std::ios_base::in | std::ios_base::binary);
 
     //read from file
+    if (fin.is_open())
+    {
+        //read size
+        int numTasks;
+        fin.read((char*)&numTasks, sizeof(int));
+
+        //read file
+        for (int i = 0; i < numTasks; i++)
+        {
+            Task task;
+            fin.read((char*)&task, sizeof(Task));
+            TodoList.push_back(task);
+        }
+
+        //close file
+        fin.close();
+    }
     
     //set up the main menu
     const char* MainMenuTitle = TodoList.size() > 0 ? "What would you like to do?" : "Please select the first option to begin:";
@@ -25,6 +46,8 @@ int main()
     //Execute main menu
     do
     {
+        system("cls");
+
         //organize and print the todo list if there is one
         if (TodoList.size() != 0)
         {
@@ -39,11 +62,14 @@ int main()
                             TodoList[j + 1] = temp;
                         }
             }
+            std::cout << "Your Todo List:\n";
             for (Task task : TodoList) task.PrintTask();
+            std::cout << std::endl;
         }
 
         //print main menu and collect user input
         int MainMenuChoice = Utility::MenuAndChoice(MainMenuTitle, MainMenu, 4);
+        system("cls");
         switch (MainMenuChoice)
         {
         case 1: //add a task
@@ -54,10 +80,14 @@ int main()
         }
         case 2: //edit a task
         {
-            if (TodoList.size() == 0) std::cout << "Please add a task to your todo list first!\n";
+            if (TodoList.size() == 0)
+            {
+                std::cout << "Please add a task to your todo list first!\n";
+                system("pause");
+            }
             else
             {
-                std::cout << "Please choose a task to edit:\n";
+                std::cout << "Please choose a task to edit:\n\n";
                 for (int i = 0; i < TodoList.size(); i++)
                 {
                     std::cout << i + 1 << ". ";
@@ -70,7 +100,11 @@ int main()
         }
         case 3: //delete a task
         {
-            if (TodoList.size() == 0) std::cout << "Please add a task to your todo list first!\n";
+            if (TodoList.size() == 0)
+            {
+                std::cout << "Please add a task to your todo list first!\n";
+                system("pause");
+            }
             else
             {
                 std::cout << "Please choose a task to delete:\n";
@@ -81,6 +115,7 @@ int main()
                 }
                 int TaskToDelete = Utility::GetValidatedInt("\nChoose one: ", 1, TodoList.size());
 
+                system("cls");
                 std::cout << "This is the task you chose to delete:\n";
                 TodoList[TaskToDelete - 1].PrintTask();
                 
@@ -99,6 +134,24 @@ int main()
         }
         }
     } while (!MainMenuExit);
+
+    //file output
+    if (TodoList.size() > 0)
+    {
+        //open file
+        std::fstream fout;
+        fout.open("list.bin", std::ios_base::out | std::ios_base::binary);
+
+        //write to file
+        int numTasks = TodoList.size();
+        fout.write((char*)&numTasks, sizeof(int));
+        for (const Task& task : TodoList)
+            fout.write((char*)&task, sizeof(Task));
+
+        //close file
+        fout.close();
+    }
+    else remove("list.bin");
 
     //exit gracefully
     return 0;

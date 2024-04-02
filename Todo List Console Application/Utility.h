@@ -68,6 +68,9 @@ namespace Utility
 			std::cout << i + 1 << ". " << menu[i] << std::endl;
 		}
 
+		//add an extra line for padding
+		std::cout << std::endl;
+
 		// Get user's selection
 		int choice = GetValidatedInt("Choose One: ", 1, menuSize);
 
@@ -126,8 +129,13 @@ namespace Utility
 		if (title == "") return task;
 		task.setTitle(title);
 
+		//show the task
+		system("cls");
+		std::cout << "Here is what your task looks like so far:\n";
+		task.PrintTask();
+
 		//set the description
-		std::cout << "Please enter a description for your task and press enter. Alternatively, you may press enter with no input to skip this.\nDescription of task >> ";
+		std::cout << "\nPlease enter a description for your task and press enter. Alternatively, you may press enter with no input to skip this.\nDescription of task >> ";
 		std::string desc = "";
 		std::getline(std::cin, desc);
 		StripString(desc);
@@ -136,7 +144,12 @@ namespace Utility
 		//set the due date
 		while (true)
 		{
-			std::cout << "Please enter a due date for your task and press enter. Alternatively, you may press enter with no input to skip this.\nDue date of task (MM/DD/YYYY) >> ";
+			//show the task
+			system("cls");
+			std::cout << "Here is what your task looks like so far:\n";
+			task.PrintTask();
+
+			std::cout << "\nPlease enter a due date for your task and press enter. Alternatively, you may press enter with no input to skip this.\nDue date of task (MM/DD/YYYY) >> ";
 			std::string date = "";
 			std::getline(std::cin, date);
 			StripString(date);
@@ -150,12 +163,25 @@ namespace Utility
 				task.setDate(d);
 				break;
 			}
-			if (isValidDate(date) == 1) std::cout << "Invalid date format. Please enter a date in MM/DD/YYYY format.\n";
-			else std::cout << "Invalid integer range. Please enter a valid month, day, and year.\n";
+			if (isValidDate(date) == 1)
+			{
+				std::cout << "Invalid date format. Please enter a date in MM/DD/YYYY format.\n";
+				system("pause");
+			}
+			else
+			{
+				std::cout << "Invalid integer range. Please enter a valid month, day, and year.\n";
+				system("pause");
+			}
 		}
 
+		//show the task
+		system("cls");
+		std::cout << "Here is what your task looks like so far:\n";
+		task.PrintTask();
+
 		//set the priority
-		task.setPriority(GetValidatedInt("Please enter a priority for your task and press enter. Default priority is 0.\nPriority >> "));
+		task.setPriority(GetValidatedInt("\nPlease enter a priority for your task and press enter. Default priority is 0.\nPriority >> "));
 
 		//return the completed task
 		return task;
@@ -184,8 +210,22 @@ namespace Utility
 		//execute edit menu
 		do
 		{
+			system("cls");
+
+			//show user the chosen task
+			std::cout << "Here is the task you chose:\n";
+			t.PrintTask();
+			std::cout << std::endl;
+
 			//print edit menu and collect user input
 			int EditMenuChoice = MenuAndChoice(EditMenuTitle, EditMenu, 8);
+			system("cls");
+
+			//show user the chosen task again
+			std::cout << "Here is the task you chose:\n";
+			t.PrintTask();
+			std::cout << std::endl;
+
 			switch (EditMenuChoice)
 			{
 			case 1: //mark as complete/undo
