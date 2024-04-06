@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -49,4 +50,8 @@ public:
 
 	//print out the task
 	void PrintTask();
+
+	//file i/o
+	void Serialize(std::ostream& _stream);
+	void Deserialize(std::istream& _stream);
 };

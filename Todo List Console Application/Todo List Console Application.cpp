@@ -17,14 +17,14 @@ int main()
     if (fin.is_open())
     {
         //read size
-        int numTasks;
-        fin.read((char*)&numTasks, sizeof(int));
+        size_t numTasks;
+        fin.read((char*)&numTasks, sizeof(size_t));
 
         //read file
         for (int i = 0; i < numTasks; i++)
         {
             Task task;
-            fin.read((char*)&task, sizeof(Task));
+            task.Deserialize(fin);
             TodoList.push_back(task);
         }
 
@@ -143,10 +143,10 @@ int main()
         fout.open("list.bin", std::ios_base::out | std::ios_base::binary);
 
         //write to file
-        int numTasks = TodoList.size();
-        fout.write((char*)&numTasks, sizeof(int));
-        for (const Task& task : TodoList)
-            fout.write((char*)&task, sizeof(Task));
+        size_t numTasks = TodoList.size();
+        fout.write((char*)&numTasks, sizeof(size_t));
+        for (Task task : TodoList)
+            task.Serialize(fout);
 
         //close file
         fout.close();
